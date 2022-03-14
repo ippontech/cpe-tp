@@ -5,6 +5,6 @@ resource "random_string" "topic_name_suffix" {
 }
 
 resource "aws_sns_topic" "default" {
-  name = "${var.school}-${random_string.topic_name_suffix.result}"
+  name         = "${var.school}-${random_string.topic_name_suffix.result}"
   display_name = "CPE default topic"
 }
