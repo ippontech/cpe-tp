@@ -85,7 +85,7 @@ terraform init
 terraform apply
 ```
 
-3) Go look into the AWS Console that new resources have just been created:
+3) Go look into the AWS Console for the new resources that have just been created:
 * a VPC named `05_networking-vpc` with CIDR block `10.1.0.0/21`;
 * an Internet gateway `05_networking-internet-gateway`;
 * 2 route tables: one public and one private;
@@ -95,25 +95,25 @@ to make public subnets.
 4) Now, it's your turn to work! You will have to first create 2 subnets within the newly created VPC:
 * 1 public subnet with CIDR `10.1.0.0/24`;
 * 1 private subnet with CIDR `10.1.4.0/24`.
-Both subnets should be created in Availability zone A. Beware, public subnets should have `map_public_ip_on_launch`
+Both subnets should be created in the Availability zone A. Beware, public subnets should have `map_public_ip_on_launch`
 parameter set to `true` so that instances started in these subnets get a public IP. You can check `aws_subnet`
 resource in [Terraform documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet).
 5) Once the subnets are created, you will have to associate them to the Route tables to allow internet access. 
-Else, if you start an instance, you won't be able to access internet resources.
-Use `aws_route_table_association` resources to associate the public subnet to the public route table and private
+If not, when you start an instance, you won't be able to access internet resources.
+Use `aws_route_table_association` resources to associate the public subnet to the public route table and the private
 subnet to the private route table.
 
-6) Now we have 2 subnets, in AZ a: one public and one private. But it's not highly available at the moment. If AZ a
-would come to fail, our applications deployed in those subnets would not be able to recover. Let's now create 4 new
+6) Now we have 2 subnets, in the AZ a: one public and one private. But it's not highly available at the moment. If the AZ a
+fails, our applications deployed in those subnets would not be able to recover. Let's now create 4 new
 subnets:
 * 2 new public subnets in AZ b and AZ c;
 * 2 new private subnets in AZ b and AZ c as well.
-Each of these subnets should have 256 IP addresses each. The public subnets IP addresses should be within 
-`10.1.0.0/22` CIDR block and the private subnets should be within `10.1.4.0/22` CIDR block.
+Each of these subnets should have 256 IP addresses each. The public subnets IP addresses should be within the 
+`10.1.0.0/22` CIDR block and the private subnets should be within the `10.1.4.0/22` CIDR block.
 
 > Note: a `/22` contains 1,024 IP addresses. You can use this [IP address website](https://www.ipaddressguide.com/cidr) 
 to help you set up your subnet's CIDR blocks.
 
-7) (optional) Start an EC2 instance by hand within the AWS Console in one of your public subnet. 
-Try to connect through SSH to this instance and verify that you can access internet through a curl command. 
+7) (optional) Start an EC2 instance manually inside the AWS Console assigned to one of your public subnets. 
+Try to connect through SSH to this instance and verify that you can access the internet with the help of the curl program. 
 You can check that `curl http://ifconfig.io` returns the public IP address of your EC2 instance.
