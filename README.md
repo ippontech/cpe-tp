@@ -7,7 +7,8 @@ Terraform repository for CPE classes
 For all modules below, here are the first steps:
 1) Start the sandbox environment (and not a Lab environment).
 2) Create an AWS Cloud9 environment from the AWS Console with a `t3.small` instance type.
-3) Once in the Cloud9 environment, you can checkout the code:
+3) Change the network settings to target a subnet in the AZ a in region us-east-1.
+4) Once in the Cloud9 environment, you can checkout the code:
 ```bash
 git clone https://github.com/taufort/cpe-terraform.git
 ```
@@ -208,3 +209,40 @@ ssh -i bastion_cpe_key ec2-user@${BASTION_IP} -L 8080:${PRIVATE_WEB_SERVER_IP}:8
 
 In Cloud9, you should now be able to access the HTTPD home page by clicking on "Preview" then "Preview Running 
 Application" at the top of your screen.
+
+## Module 6 - Container services
+
+1) After you have cloned the git repository, you can go into the module:
+```bash
+cd cpe-terraform/06_container/
+```
+
+2) You have been provided a file named `Dockerfile` which describes what you will install in your Docker image. A
+Dockerfile usually starts with a `FROM` directive to indicate from which other Docker image you inherit. Here, 
+we inherit from the Docker image `nginx` and we use the tag `latest` which represents the version of the image you
+want to use.
+
+3) Build your Docker image with the following command in your Cloud9 terminal:
+```bash
+docker build -t nginx-cpe:latest .
+```
+
+4) Search for documentation on [Docker website](https://docs.docker.com/engine/reference/commandline/run/) on how
+you can start your freshly built Docker image and redirects the nginx server (which started on port 80) to port 
+8080 of your Cloud9 instance.
+
+5) Use the preview feature of Cloud9, you should see the nginx welcome page appear.
+
+6) Create an `index.html` file next to your Dockerfile with whatever you want inside, it can be an HTML hello world 
+message for instance or something else.
+
+7) Use the `ADD` or `COPY` directives in the Dockerfile to add the `index.html` into your Docker image so that it
+can be exposed by nginx (look in the [Docker documentation](https://docs.docker.com/engine/reference/builder/#add)). 
+You will have to put the `index.html` in `/usr/share/nginx/html` in your Docker image so that it can be used by nginx
+server.
+
+8) Rebuild your docker image after saving your files and rerun the new Docker image with a `docker run` command.
+Click on the Cloud9 "Preview running application" button up top and check that your `index.html` is now exposed
+on the nginx server.
+
+10) (optional) Follow this NodeJS guide to have a dynamic application: https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
