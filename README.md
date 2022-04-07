@@ -246,3 +246,89 @@ Click on the Cloud9 "Preview running application" button up top and check that y
 on the nginx server.
 
 10) (optional) Follow this NodeJS guide to have a dynamic application: https://nodejs.org/en/docs/guides/nodejs-docker-webapp/
+
+
+## Module 7  - Storage
+
+The purpose of this module is to:
+* Put a file into a first S3 bucket;
+* Trigger an AWS lambda when a file is put into that first S3 bucket. The Lambda will then copy the file from
+the first S3 bucket into a second S3 bucket. Once this is done, the file in the first bucket should be deleted;
+* Finally, be notified through an email with AWS SNS that the file was moved from the first S3 bucket to
+the second S3 bucket.
+
+> AWS SNS is a notification service that can be used to send email notifications for instance.
+
+1) After you have cloned the git repository, you can go into the module:
+```bash
+cd cpe-terraform/07_storage/
+```
+2) And start working with Terraform:
+```bash
+# Init the Terraform layer and download required providers
+terraform init
+
+# Take a look at what Terraform will do on AWS
+terraform plan
+
+# Create/update resources on AWS
+terraform apply
+```
+
+3) Unfortunately, you won't be able to use Terraform to create an S3 bucket because of IAM restrictions on
+the sandbox environment. 
+You first need to create two S3 buckets through the AWS console directly. To do so, 
+go to: https://s3.console.aws.amazon.com/s3/get-started?region=us-east-1.
+The bucket names must be unique worldwide, so be sure to choose a unique name (you can use your name, the
+current date, etc...).
+
+For instance, your buckets could be called:
+* `taufort-06042022-source`
+* `taufort-06042022-target`
+
+From now on, let's call the first bucket the `source` bucket and the second bucket the `target` bucket.
+
+4) You have been provided a Python Hello World lambda in `lambda.tf` file. The first thing you need to do is to 
+trigger that lambda when an object is uploaded in your source bucket. For that, you now need to:
+* Create an `aws_s3_bucket_notification` on your source bucket (https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification)
+* Create a `aws_lambda_permission` to authorize the AWS S3 service to invoke your lambda.
+
+Once this is done, you should be able to verify that your lambda is indeed triggered when you put an object
+into your source bucket. You can find the logs of your Lambda in [AWS CloudWatch](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#logsV2:log-groups/log-group/$252Faws$252Flambda$252Fmove-s3-object-07_storage)
+
+> You can trigger your lambda manually from the AWS console directly in the 'Test' tab when you click on the 'Test'
+button (go see https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/move-s3-object-07_storage?tab=testing)
+
+5) Now you must modify your lambda Python code to copy the object put in the source bucket to the target bucket.
+You can edit the Python code in the python script provided in the code (see `07_storage/lambda/move_s3_object.py` file)
+and then use `terraform apply` to deploy the new version of your Python code.
+
+As the previous method is not ideal for tests, you can also directly edit the python code in the AWS console 
+to test your modifications more rapidly (the use of Terraform can be cumbersome for that). 
+For that, go edit the code here: https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/move-s3-object-07_storage?tab=code
+Once the code has been edited, you can click on the 'Deploy' button and then go to the 'Test' tab to retest the new 
+version of the code of your Lambda.
+
+Take a look closer to the logs of your lambda, you will see that an S3 JSON event is logged. It has the following form:
+`{'Records':.....}`.
+This event contains the name of the object that you put into the source bucket. You'll need to use that event to retrieve
+the object's name to be able to copy it to the target bucket.
+
+To copy an S3 object from one bucket to another, you will need to use the Python boto3 library. The S3 boto3 service
+is documented here: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/s3.html#bucket
+
+6) Once you have successfully copied the file from the source bucket to the target bucket, you need to delete
+the original file from the source bucket. We do not want to pay for the old file stored in the source bucket.
+
+7) You now must send an event to the SNS topic provided in `sns.tf`. To do so, you have several solutions:
+* You can use `aws_s3_bucket_notification` on the target bucket to trigger a notification to the SNS topic
+when an object is created in the target bucket. You will also need to update the `policy` of the `aws_sns_topic`
+to authorize S3 to send notifications to that topic (you can find an example in [Terraform documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification))
+* You can also send the notification to the SNS topic from the Python code of your lambda. For that, you will need
+to use the SNS service in boto3 (see https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sns.html)
+
+8) To receive an email notification from the SNS topic, you need to manually create a subscription in the AWS 
+console with the "Create subscription" button: https://us-east-1.console.aws.amazon.com/sns/v3/home?region=us-east-1#/topic/arn:aws:sns:us-east-1:722738513845:s3-notification-07_storage.
+You can then choose the protocol of the subscription and enter your personal email address to receive an email.
+
+Once this is done, check that you can now receive an email and that the whole chain works!
