@@ -251,7 +251,24 @@ the second S3 bucket.
 ```bash
 cd cpe-terraform/07_storage/
 ```
-2) And start working with Terraform:
+
+2) Unfortunately, you won't be able to use Terraform to create an S3 bucket because of IAM restrictions on
+   the sandbox environment.
+   You first need to create two S3 buckets through the AWS console directly. To do so,
+   go to: https://s3.console.aws.amazon.com/s3/get-started?region=us-east-1.
+   The bucket names must be unique worldwide, so be sure to choose a unique name (you can use your name, the
+   current date, etc...).
+
+For instance, your buckets could be called:
+* `taufort-06042022-source`
+* `taufort-06042022-target`
+
+From now on, let's call the first bucket the `source` bucket and the second bucket the `target` bucket.
+
+Once your buckets are created, be sure to update the content of `bucket_source` and `bucket_target` variables
+in `07_storage/variables.tf`.
+
+3) Now you should be able to start working with Terraform:
 ```bash
 # Init the Terraform layer and download required providers
 terraform init
@@ -262,19 +279,6 @@ terraform plan
 # Create/update resources on AWS
 terraform apply
 ```
-
-3) Unfortunately, you won't be able to use Terraform to create an S3 bucket because of IAM restrictions on
-the sandbox environment. 
-You first need to create two S3 buckets through the AWS console directly. To do so, 
-go to: https://s3.console.aws.amazon.com/s3/get-started?region=us-east-1.
-The bucket names must be unique worldwide, so be sure to choose a unique name (you can use your name, the
-current date, etc...).
-
-For instance, your buckets could be called:
-* `taufort-06042022-source`
-* `taufort-06042022-target`
-
-From now on, let's call the first bucket the `source` bucket and the second bucket the `target` bucket.
 
 4) You have been provided a Python Hello World lambda in `lambda.tf` file. The first thing you need to do is to 
 trigger that lambda when an object is uploaded in your source bucket. For that, you now need to:
