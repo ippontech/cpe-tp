@@ -324,3 +324,54 @@ console with the "Create subscription" button: https://us-east-1.console.aws.ama
 You can then choose the protocol of the subscription and enter your personal email address to receive an email.
 
 Once this is done, check that you can now receive an email and that the whole chain works!
+
+## Module 8 - Databases
+
+The purpose of this module is to create a public EC2 instance exposing an HTTP server that will use a RDS PostgreSQL
+instance.
+
+1) After you have cloned the git repository, you can go into the module:
+```bash
+cd cpe-terraform/08_databases/
+```
+
+2) You can apply the Terraform code to create the base resources:
+```bash
+terraform init
+terraform apply
+```
+
+3) You will now have to create a DB subnet group for your future RDS instance. A DB subnet group must define in which
+subnets your RDS instance will be deployed. Your future RDS instance should be private of course. We do not want to
+expose it on the internet. 
+Take a look at file `rds.tf`. There is a `aws_db_subnet_group` resource in there, the code block is commented, 
+you can uncomment it and you will have to complete it.
+
+4) In this step, you will have to define a Security Group for your RDS instance. Check out the `rds.tf` file, you
+will find a `aws_security_group` resource predefined for you. Uncomment it and complete it.
+
+5) You must now create your PostgreSQL RDS instance. It was predefined in `rds.tf` with some predefined arguments
+that you can keep but you will have to add some missing ones. You'll need at least to add:
+* the DB subnet group created in a previous step
+* the Security group created a bit before
+* a name for your PostgreSQL database
+* a username/password couple to access this database
+
+6) In this step, you will have to define a Security Group for the EC2 instance that will access your RDS instance 
+a bit later. Check out the `ec2.tf` file, you will find a `aws_security_group` resource predefined for you. 
+Uncomment it and complete it.
+
+7) In this step, you will create an EC2 instance in which we will deploy a Java HTTP server.
+Check out the `ec2.tf` file, you will find a `aws_instance` resource predefined for you.
+Uncomment it and complete it.
+
+The `user_data` argument uses a built-in Terraform function called `templatefile` which takes a local file name
+as a first argument and then a list of variables. You must pass the right variables to the templated shell script
+to be able to properly start your Java HTTP server.
+Check out the documentation if needed: https://www.terraform.io/language/functions/templatefile.
+
+8) If you have not made any mistake before, you should be able to access your public EC2 instance from the internet
+in a browser with such an URL (find yours in the AWS console): http://ec2-54-209-130-246.compute-1.amazonaws.com/
+
+9) (optional) Log into your instance with AWS SSM from the AWS Console and find the Cloud init log file to see what
+was done by the `cloud_init.sh.tpl` file at the start of the instance.
