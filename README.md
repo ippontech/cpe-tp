@@ -373,5 +373,10 @@ Check out the documentation if needed: https://www.terraform.io/language/functio
 8) If you have not made any mistake before, you should be able to access your public EC2 instance from the internet
 in a browser with such an URL (find yours in the AWS console): http://ec2-54-209-130-246.compute-1.amazonaws.com/
 
-9) (optional) Log into your instance with AWS SSM from the AWS Console and find the Cloud init log file to see what
-was done by the `cloud_init.sh.tpl` file at the start of the instance.
+9) Look into your JHipster application UI for a way to interact with your RDS database. If you need to login, use
+the following user/password couple: `admin/admin`.
+You can interact with the RDS database through the entity screen or through the Swagger API. You should be able to
+find a table called 'Student' and to insert entities in this table.
+
+10) (optional) Log into your instance with AWS SSM from the AWS Console and find the Cloud init log file to see what
+    was done by the `cloud_init.sh.tpl` file at the start of the instance.
