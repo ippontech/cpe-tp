@@ -1,23 +1,23 @@
-# cpe-terraform
+# cpe-tp
 
-Terraform repository for CPE classes
+Repository containing practical work for Lyon CPE AWS classes.
 
 ## Introduction
 
 For all modules below, here are the first steps:
-1) Start the sandbox environment (and not a Lab environment).
+1) Start the sandbox environment (and not a Lab environment) in AWS Academy.
 2) Create an AWS Cloud9 environment from the AWS Console with a `t3.small` instance type.
 3) Change the network settings to target a subnet in the AZ a in region us-east-1.
 4) Once in the Cloud9 environment, you can checkout the code:
 ```bash
-git clone https://github.com/taufort/cpe-terraform.git
+git clone https://github.com/ippontech/cpe-tp.git
 ```
 
 ## Module 4 - AWS Cloud Security
 
 1) After you have cloned the git repository, you can go into the module:
 ```bash
-cd cpe-terraform/04_cloud_security/
+cd cpe-tp/04_cloud_security/
 ```
 2) And start working with Terraform:
 ```bash
@@ -77,7 +77,7 @@ backend.
 
 1) After you have cloned the git repository, you can go into the module:
 ```bash
-cd cpe-terraform/05_networking/
+cd cpe-tp/05_networking/
 ```
 
 2) And start working with Terraform:
@@ -126,7 +126,7 @@ You can check that `curl http://ifconfig.io` returns the public IP address of yo
 
 1) After you have cloned the git repository, you can go into the module:
 ```bash
-cd cpe-terraform/06_compute/
+cd cpe-tp/06_compute/
 ```
 
 2) And start working with Terraform to initialize the VPC resources (VPC / subnets / Internet gateway / Route tables / NAT...):
@@ -214,7 +214,7 @@ Application" at the top of your screen.
 
 1) After you have cloned the git repository, you can go into the module:
 ```bash
-cd cpe-terraform/06_container/
+cd cpe-tp/06_container/
 ```
 
 2) You have been provided a file named `Dockerfile` which describes what you will install in your Docker image. A
@@ -261,7 +261,7 @@ the second S3 bucket.
 
 1) After you have cloned the git repository, you can go into the module:
 ```bash
-cd cpe-terraform/07_storage/
+cd cpe-tp/07_storage/
 ```
 
 2) Unfortunately, you won't be able to use Terraform to create an S3 bucket because of IAM restrictions on
@@ -344,7 +344,7 @@ instance.
 
 1) After you have cloned the git repository, you can go into the module:
 ```bash
-cd cpe-terraform/08_databases/
+cd cpe-tp/08_databases/
 ```
 
 2) You can apply the Terraform code to create the base resources:
