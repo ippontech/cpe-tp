@@ -13,6 +13,22 @@ For all modules below, here are the first steps:
 git clone https://github.com/ippontech/cpe-tp.git
 ```
 
+## Module 1 - AWS Cloud Concepts
+
+1) After you have cloned the git repository, you can go into the module:
+```bash
+cd cpe-tp/01_cloud_concepts/
+```
+2) And start working with Terraform:
+```bash
+# Init the Terraform layer and download required providers
+terraform init
+```
+3) Open the file `random.tf`. You need to create a random integer resource in that file between 10 and 20.
+4) You now need to create an output to store the result of your random integer to see its value.
+5) It's now time to create your first Terraform variables. You need to create 2, one variable called `min` and one
+called `max`. Give those variables the values you had before and use them in your random integer resource.
+
 ## Module 4 - AWS Cloud Security
 
 1) After you have cloned the git repository, you can go into the module:
