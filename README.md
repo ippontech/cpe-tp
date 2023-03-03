@@ -32,6 +32,12 @@ the plan, you can then `terraform apply`.
 documentation on how to create an output.
 6) It's now time to create your first Terraform variables. You need to create 2, one variable called `min` and one
 called `max`. Give those variables the values you had before and use them in your random integer resource.
+7) (optional) Now, if you have time, go into the AWS console and take a look at the AWS S3 service. Create a test
+S3 bucket in the console and try to update a file from your computer into the bucket.
+8) (optional) Now, try to create an S3 bucket with some Terraform code with the mechanics you've learnt:
+   1) You'll have to add the AWS provider in the Terraform configuration files and rerun a `terraform init` command to
+   download the provider.
+   2) Then try to create a S3 bucket with come code with Terraform documentation.
 
 ## Module 4 - AWS Cloud Security
 
