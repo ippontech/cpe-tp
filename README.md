@@ -7,8 +7,9 @@ Repository containing practical work for Lyon CPE AWS classes.
 For all modules below, here are the first steps:
 1) Start the sandbox environment (and not a Lab environment) in AWS Academy.
 2) Create an AWS Cloud9 environment from the AWS Console with a `t3.small` instance type.
-3) Change the network settings to target a subnet in the AZ a in region us-east-1.
-4) Once in the Cloud9 environment, you can checkout the code:
+3) In network settings, you must select "Secure Shell (SSH)", else it won't work.
+4) Still in the network settings, go into "VPC settings" and update the subnet to target `us-east-1a`.
+5) Once in the Cloud9 environment, you can checkout the code:
 ```bash
 git clone https://github.com/ippontech/cpe-tp.git
 ```
@@ -25,8 +26,11 @@ cd cpe-tp/01_cloud_concepts/
 terraform init
 ```
 3) Open the file `random.tf`. You need to create a random integer resource in that file between 10 and 20.
-4) You now need to create an output to store the result of your random integer to see its value.
-5) It's now time to create your first Terraform variables. You need to create 2, one variable called `min` and one
+4) When the resource is ready in your code, try `terraform plan` to see what Terraform will do. If you're satisfied with
+the plan, you can then `terraform apply`.
+5) You now need to create an output to store the result of your random integer to see its value. Look into the Terraform
+documentation on how to create an output.
+6) It's now time to create your first Terraform variables. You need to create 2, one variable called `min` and one
 called `max`. Give those variables the values you had before and use them in your random integer resource.
 
 ## Module 4 - AWS Cloud Security
