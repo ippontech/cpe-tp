@@ -89,27 +89,38 @@ backend.
 
 ## Module 5 - Networking
 
+In this module we will deploy the following infrastructure:
+
+![vpc.png](./05_networking/vpc.png)
+
 1) After you have cloned the git repository, you can go into the module:
+
 ```bash
 cd cpe-tp/05_networking/
 ```
 
 2) And start working with Terraform:
+
 ```bash
 terraform init
+terraform plan
 terraform apply
 ```
 
 3) Go look into the AWS Console for the new resources that have just been created:
-* a VPC named `05_networking-vpc` with CIDR block `10.1.0.0/21`;
-* an internet gateway `05_networking-internet-gateway`;
-* 2 route tables: one public and one private;
-* Check the public route table: there should be one route towards the internet gateway. That route will help us later
+
+* a VPC named `05_networking-vpc` with CIDR block `10.0.0.0/16`
+* an internet gateway `05_networking-internet-gateway`
+* 2 route tables: one public and one private
+
+Check the public route table: there should be one route towards the internet gateway. That route will help us later
 to make public subnets.
 
 4) Now, it's your turn to work! You will have to first create 2 subnets within the newly created VPC:
-* 1 public subnet with CIDR `10.1.0.0/24`;
-* 1 private subnet with CIDR `10.1.4.0/24`.
+
+* 1 public subnet with CIDR `10.0.0.0/24`
+* 1 private subnet with CIDR `10.0.1.0/24`
+
 Both subnets should be created in the Availability zone A. Beware, public subnets should have `map_public_ip_on_launch`
 parameter set to `true` so that instances started in these subnets get a public IP. You can check `aws_subnet`
 resource in [Terraform documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet).
@@ -122,12 +133,13 @@ subnet to the private route table.
 6) Now we have 2 subnets, in the AZ a: one public and one private. But it's not highly available at the moment. If the AZ a
 fails, our applications deployed in those subnets would not be able to recover. Let's now create 4 new
 subnets:
-* 2 new public subnets in AZ b and AZ c;
-* 2 new private subnets in AZ b and AZ c as well.
-Each of these subnets should have 256 IP addresses each. The public subnets IP addresses should be within the
-`10.1.0.0/22` CIDR block and the private subnets should be within the `10.1.4.0/22` CIDR block.
 
-> Note: a `/22` contains 1,024 IP addresses. You can use this [IP address site](https://www.ipaddressguide.com/cidr)
+* 2 new public subnets in AZ b and AZ c
+* 2 new private subnets in AZ b and AZ c as well
+
+Each of these subnets should have 256 IP addresses each (`/24`), and none of them should overlap.
+
+> Note: a `/24` contains 256 IP addresses. You can use this [IP address site](https://www.ipaddressguide.com/cidr)
 to help you set up your subnet's CIDR blocks.
 
 7) (optional) Start an EC2 instance manually inside the AWS Console assigned to one of your public subnets.
