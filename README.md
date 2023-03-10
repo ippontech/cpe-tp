@@ -140,7 +140,7 @@ subnets:
 Each of these subnets should have 256 IP addresses each (`/24`), and none of them should overlap.
 
 > Note: a `/24` contains 256 IP addresses. You can use this [IP address site](https://www.ipaddressguide.com/cidr)
-to help you set up your subnet's CIDR blocks.
+to help you set up your subnet's CIDR blocks. Otherwise, you can use the unix utility `ipcalc`.
 
 7) (optional) Start an EC2 instance manually inside the AWS Console assigned to one of your public subnets.
 Try to connect through SSH to this instance and verify that you can access the internet with the help of the curl program.
