@@ -63,11 +63,11 @@ happens.
 6) Take a look in the AWS console at the generated SNS policy in the "Access policy" tab. This policy
 was auto-generated and does not respect least privilege at the moment.
 7) Now, you need to add an SNS policy on that topic with some Terraform code in `sns.tf` file to block the
-IAM role `voclabs` from publishing any SNS message in the topic. The `voclabs` IAM role is the role you
+IAM role `cpe-<random-string>` from publishing any SNS message in the topic. The `cpe-<random-string>` IAM role is the role you
 are assuming when you are using the AWS Console.
 8) Once the policy has been modified with Terraform. Check that you cannot publish anymore an event in the topic
 through the AWS console.
-9) Once you have succeeded the previous steps, authorize the `voclabs` role to publish messages but block
+9) Once you have succeeded the previous steps, authorize the `cpe-<random-string>` role to publish messages but block
 every other IAM user/role from doing so (always with Terraform). Check that you can now publish again a message
 into the topic.
 10) Activate the encryption on the SNS topic with KMS (and Terraform) to respect the security pillars of AWS.
