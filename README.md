@@ -299,7 +299,7 @@ cd cpe-tp/07_storage/
 2) Unfortunately, you won't be able to use Terraform to create an S3 bucket because of IAM restrictions on
    the sandbox environment.
    You first need to create two S3 buckets through the AWS console directly. To do so,
-   go to: <https://s3.console.aws.amazon.com/s3/get-started?region=us-east-1>.
+   go to: <https://s3.console.aws.amazon.com/s3/buckets?region=us-east-1>.
    The bucket names must be unique worldwide, so be sure to choose a unique name (you can use your name, the
    current date, etc...).
 
@@ -324,16 +324,16 @@ terraform plan
 terraform apply
 ```
 
-4) You have been provided a Python Hello World lambda in `lambda.tf` file. The first thing you need to do is to
+4) You have been provided a Python Hello World lambda in `1-lambda.tf` file. The first thing you need to do is to
 trigger that lambda when an object is uploaded in your source bucket. For that, you now need to:
 * Create an `aws_s3_bucket_notification` on your source bucket (<https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification>)
 * Create a `aws_lambda_permission` to authorize the AWS S3 service to invoke your lambda.
 
 Once this is done, you should be able to verify that your lambda is indeed triggered when you put an object
-into your source bucket. You can find the logs of your Lambda in [AWS CloudWatch](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#logsV2:log-groups/log-group/$252Faws$252Flambda$252Fmove-s3-object-07_storage)
+into your source bucket. You can find the logs of your Lambda in [AWS CloudWatch](https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#logsV2:log-groups/log-group/$252Faws$252Flambda$252F07-storage-move-s3-object)
 
 > You can trigger your lambda manually from the AWS console directly in the 'Test' tab when you click on the 'Test'
-button (go see <https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/move-s3-object-07_storage?tab=testing>)
+button (go see <https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/07-storage-move-s3-object?tab=testing>)
 
 5) Now you must modify your lambda Python code to copy the object put in the source bucket to the target bucket.
 You can edit the Python code in the python script provided in the code (see `07_storage/lambda/move_s3_object.py` file)
@@ -341,7 +341,7 @@ and then use `terraform apply` to deploy the new version of your Python code.
 
 As the previous method is not ideal for tests, you can also directly edit the python code in the AWS console
 to test your modifications more rapidly (the use of Terraform can be cumbersome for that).
-For that, go edit the code here: <https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/move-s3-object-07_storage?tab=code>
+For that, go edit the code here: <https://us-east-1.console.aws.amazon.com/lambda/home?region=us-east-1#/functions/07-storage-move-s3-object?tab=code>
 Once the code has been edited, you can click on the 'Deploy' button and then go to the 'Test' tab to retest the new
 version of the code of your Lambda.
 
@@ -356,7 +356,7 @@ is documented here: <https://boto3.amazonaws.com/v1/documentation/api/latest/ref
 6) Once you have successfully copied the file from the source bucket to the target bucket, you need to delete
 the original file from the source bucket. We do not want to pay for the old file stored in the source bucket.
 
-7) You now must send an event to the SNS topic provided in `sns.tf`. To do so, you have several solutions:
+7) You now must send an event to the SNS topic provided in `2-sns.tf`. To do so, you have several solutions:
 * You can use `aws_s3_bucket_notification` on the target bucket to trigger a notification to the SNS topic
 when an object is created in the target bucket. You will also need to update the `policy` of the `aws_sns_topic`
 to authorize S3 to send notifications to that topic (you can find an example in [Terraform documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification))
@@ -364,7 +364,7 @@ to authorize S3 to send notifications to that topic (you can find an example in 
 to use the SNS service in boto3 (see <https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sns.html>)
 
 8) To receive an email notification from the SNS topic, you need to manually create a subscription in the AWS
-console with the "Create subscription" button: <https://us-east-1.console.aws.amazon.com/sns/v3/home?region=us-east-1#/topic/arn:aws:sns:us-east-1:722738513845:s3-notification-07_storage>.
+console with the "Create subscription" button.
 You can then choose the protocol of the subscription and enter your personal email address to receive an email.
 
 Once this is done, check that you can now receive an email and that the whole chain works!
