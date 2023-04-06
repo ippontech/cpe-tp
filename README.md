@@ -385,28 +385,33 @@ terraform init
 terraform apply
 ```
 
-3) You will now have to create a DB subnet group for your future RDS instance. A DB subnet group must define in which
-subnets your RDS instance will be deployed. Your future RDS instance should be private of course. We do not want to
-expose it on the internet.
-Take a look at file `rds.tf`. There is a `aws_db_subnet_group` resource in there, the code block is commented,
-you can uncomment it and you will have to complete it.
+3) You will now have to create a [DB subnet group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_subnet_group)
+for your future RDS instance. A DB subnet group must define in which subnets your RDS instance will be deployed.
+Your future RDS instance should be private of course. We do not want to expose it on the internet.
+Add this new resource in the file `modules/databases/0-rds.tf`.
 
-4) In this step, you will have to define a Security Group for your RDS instance. Check out the `rds.tf` file, you
-will find a `aws_security_group` resource predefined for you. Uncomment it and complete it.
+> Remember, the subnets are created in the `network` module, so you will have to get the subnets ids from it
+and pass it to the `databases` module before using it.
 
-5) You must now create your PostgreSQL RDS instance. It was predefined in `rds.tf` with some predefined arguments
-that you can keep but you will have to add some missing ones. You'll need at least to add:
+4) In this step, you will have to define a [Security Group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group)
+for your RDS instance. If you remember, you have such an example in `06_compute/modules/compute/0-ec2.tf` file.
+Add an [ingress rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule)
+to open port 5432 from any IP of your VPC (`10.0.0.0/16`).
+
+5) You must now create your PostgreSQL [RDS instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance).
+The allocated storage should be set to 10GB, the engine is `postgres` using version 14, the identifier should be `main`
+and the instance type `db.t3.small`. You'll also need at least to add:
 * the DB subnet group created in a previous step
 * the Security group created a bit before
 * a name for your PostgreSQL database
 * a username/password couple to access this database
 
 6) In this step, you will have to define a Security Group for the EC2 instance that will access your RDS instance
-a bit later. Check out the `ec2.tf` file, you will find a `aws_security_group` resource predefined for you.
-Uncomment it and complete it.
+a bit later. You can create this resource in `modules/databases/1-ec2.tf`.
+Add an ingress rule to open HTTP port from any IP. Don't forget to allow all egress traffic.
 
 7) In this step, you will create an EC2 instance in which we will deploy a Java HTTP server.
-Check out the `ec2.tf` file, you will find a `aws_instance` resource predefined for you.
+Check out the `modules/databases/1-ec2.tf` file: you will find an `aws_instance` resource predefined for you.
 Uncomment it and complete it.
 
 The `user_data` argument uses a built-in Terraform function called `templatefile` which takes a local file name
@@ -414,7 +419,10 @@ as a first argument and then a list of variables. You must pass the right variab
 to be able to properly start your Java HTTP server.
 Check out the documentation if needed: <https://www.terraform.io/language/functions/templatefile>.
 
-8) If you have not made any mistake before, you should be able to access your public EC2 instance from the internet
+> Don't forget, we want the instance to be launched in our VPC in a public subnet to be accessible from internet and
+to be able to reach our database.
+
+8) If you made no mistake, you should be able to access your public EC2 instance from the internet
 in a browser with such a URL (find yours in the AWS console): <http://ec2-54-209-130-246.compute-1.amazonaws.com/>
 
 9) Look into your JHipster application UI for a way to interact with your RDS database. If you need to login, use
