@@ -182,7 +182,7 @@ some IAM rights so that you can access a terminal on your EC2 instance thanks an
 
 5) Now, you must create an EC2 instance with an `instance_type` of `t3.small` in one of the public subnets provided
 for you in the code. **You will need to use [Variables and Outputs](https://developer.hashicorp.com/terraform/language/values)
-to get public subnets ids created by the *network* module and use them in the *compute* module**. This EC2 instance will be
+to get public subnets IDs created by the *network* module and use them in the *compute* module**. This EC2 instance will be
 called `bastion`. We will use it for SSH access to your AWS resources.
 This instance will need to use the provided AMI (`amazon_linux_2_ami`) in the code as well as the IAM instance profile
 also provided (`ssm_instance_profile`). To create an EC2 instance through Terraform, you can use `aws_instance` resource.
@@ -229,7 +229,7 @@ ssh -i bastion_cpe_key ec2-user@${BASTION_IP}
 
 13) Create another EC2 instance (with Terraform of course) named `web-server` in one of the private subnets.
 **Again, you will need to use [Variables and Outputs](https://developer.hashicorp.com/terraform/language/values)
-to get private subnets ids created by the *network* module and use them in the *compute* module**.
+to get private subnets IDs created by the *network* module and use them in the *compute* module**.
 Use the argument `user_data` to install httpd Apache web server inside the EC2 instance when it boots for the
 first time. Create a Security Group to allow ingress on TCP port 80 (HTTP port). Use SSH on the bastion instance you
 created earlier with the `-L` option to create a secured SSH tunnel to access your web-server EC2 instance from Cloud9.
