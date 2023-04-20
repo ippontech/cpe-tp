@@ -431,3 +431,56 @@ find a table called 'Student' and to insert entities in this table.
 
 10) (optional) Log into your instance with AWS SSM from the AWS Console and find the Cloud init log file to see what
     was done by the `cloud_init.sh.tpl` file at the start of the instance.
+
+## Module 9
+
+In this module we will deploy the following infrastructure:
+
+![tp.svg](./09/docs/tp.svg)
+
+> This module will be less guided than the others. Don't hesitate to reuse what we learned before, and to search for resources
+in [the AWS Terraform provider documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs).
+
+1) After you have cloned the git repository, you can go into the module:
+
+```bash
+cd cpe-tp/09
+```
+
+2) As you can see, you don't have any file. You will have to deploy all from scratch. To start, let's create a VPC with
+[this community Terraform module](https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest).
+
+3) Then, you have to create a new module called `compute`. Inside this module, you have to deploy a nginx web server.
+
+You will need the following resources:
+
+- An EC2 instance
+  - Use a `t3.small` instance type
+  - Use `amazon_linux_2_ami` AMI (you can look at module 6)
+  - Use a private subnet (we will expose it later with a public application load balancer)
+  - Use the `LabInstanceProfile` instance profile to provide IAM rights to access the EC2 through the console (you can look at module 6)
+  - Use `user_data` to install nginx on instance startup
+- A security group
+  - Allow all traffic as egress
+  - Don't allow ingress traffic for now, we will allow only the public application load balancer to access the server on HTTP port
+
+4) You now have to expose your server with a public application load balancer.
+
+You will need the following resources:
+
+- An Application Load Balancer
+  - Use `application` as load balancer type
+  - Set internal to `false`
+  - Use the public subnets
+- A security group
+  - Allow all traffic as egress
+  - Allow HTTP port from 0.0.0.0/0 as ingress
+
+To redirect traffic from the load balancer to the EC2 instance, you will have to create other ELB resources. Read
+[the AWS Terraform provider documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs) for more details.
+
+> Don't forget to update the security group of the server to allow HTTP port from the application load balancer security group.
+
+Now, you should be able to access your application load balancer hostname. The final result should look like this:
+
+![final-result.png](./09/docs/final-result.png)
