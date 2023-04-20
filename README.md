@@ -70,10 +70,9 @@ through the AWS console.
 9) Once you have succeeded the previous steps, authorize the `voclabs` role to publish messages but block
 every other IAM user/role from doing so (always with Terraform). Check that you can now publish again a message
 into the topic.
-10) Activate the encryption on the SNS topic with KMS (and Terraform) to respect the security pillars of AWS.
-11) (optional) Create a Terraform module to create a SNS topic with an IAM policy. Refactor the code you've written
+10) (optional) Create a Terraform module to create a SNS topic with an IAM policy. Refactor the code you've written
 to create your SNS topic with your module.
-12) (optional) Now, try to create a 2nd SNS topic with your module.
+11) (optional) Now, try to create a 2nd SNS topic with your module.
 
 ### Go further
 
