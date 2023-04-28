@@ -484,3 +484,39 @@ To redirect traffic from the load balancer to the EC2 instance, you will have to
 Now, you should be able to access your application load balancer hostname. The final result should look like this:
 
 ![final-result.png](./09/docs/final-result.png)
+
+## Module 10 - Autoscaling
+
+In this module, we will complete the module 9 by adding some autoscaling.
+
+1) Update your instance resource to use the Amazon Linux 2023 AMI and the following `user_data`:
+
+```bash
+#!/bin/bash
+
+# Install Apache Web Server and PHP
+dnf install -y httpd wget php mariadb105-server
+
+# Download Lab files
+wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-100-ACCLFO-2/2-lab2-vpc/s3/lab-app.zip
+unzip lab-app.zip -d /var/www/html/
+
+# Turn on web server
+chkconfig httpd on
+service httpd start
+```
+
+Apply and check the result.
+
+2) Now, use `aws_launch_template` and `aws_autoscaling_group` resources instead of `aws_instance`.
+
+The `user_data` should be base64 encoded in the `aws_launch_template`, you should use `vpc_zone_identifier` in `aws_autoscaling_group`
+in order to select the private subnets in which the instances will be launched, and use `target_group_arns` to specify the target groups
+to link to the instances.
+
+> Don't forget to update your previous target group configuration.
+
+Apply and check the result. What happens when you click on the load test button?
+
+3) Now, add a scaling policy in order to automatically scale instances. You may use resources like `aws_autoscaling_policy` and
+`aws_cloudwatch_metric_alarm`.
